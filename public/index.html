@@ -1,0 +1,293 @@
+<!--
+  PROYECTO FINAL DE SISTEMAS WEB - ESCUELA DE CÓDIGO
+  Tienda Online de Libros "El Tunel"
+  Versión: 2.0 - Conectada a API Node.js + PostgreSQL
+  Elaboró: JLLM
+-->
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Librería El Túnel</title>
+
+  <!-- Fuentes e iconos de Google -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+  <!-- Hoja de estilos -->
+  <link rel="stylesheet" href="estilos/estilos.css">
+</head>
+
+<body>
+
+  <!-- ===== ENCABEZADO ===== -->
+  <header>
+    <div class="contenedor">
+      <h1>El Túnel</h1>
+
+      <nav>
+        <ul>
+          <li><a href="#inicio">Inicio</a></li>
+          <li><a href="#catalogo">Catálogo</a></li>
+          <li><a href="#nosotros">Sobre Nosotros</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-acciones">
+        <!-- Botón login / info usuario -->
+        <div class="usuario-info" id="usuario-info">
+          <button class="btn-login" id="btn-abrir-login">
+            <span class="material-icons">account_circle</span>
+            <span id="nombre-usuario">Iniciar sesión</span>
+          </button>
+          <button class="btn-logout oculto" id="btn-logout" title="Cerrar sesión">
+            <span class="material-icons">logout</span>
+          </button>
+        </div>
+
+        <!-- Carrito -->
+        <div class="carrito-icono" id="carrito-icono">
+          <span class="material-icons">shopping_cart</span>
+          <span class="contador-carrito" id="contador-carrito">0</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== CONTENIDO PRINCIPAL ===== -->
+  <main>
+
+    <!-- BANNER -->
+    <section id="inicio" class="banner">
+      <div class="contenedor">
+        <h2>...Creando nuevos mundos, historias y recuerdos</h2>
+        <p><i>"Vivir consiste en construir futuros recuerdos"</i></p>
+      </div>
+    </section>
+
+    <!-- CATÁLOGO -->
+    <section id="catalogo" class="catalogo-seccion">
+      <div class="contenedor">
+        <h2>Catálogo</h2>
+
+        <div class="herramientas-catalogo">
+          <!-- Buscador -->
+          <div class="buscador">
+            <input
+              type="text"
+              id="busqueda"
+              placeholder="Buscar por título o autor..."
+              aria-label="Buscar libros"
+            >
+            <button id="btn-buscar">Buscar</button>
+          </div>
+
+          <!-- Filtro categoría -->
+          <div class="selector-categoria">
+            <select id="categoria" aria-label="Filtrar por categoría">
+              <option value="todas">Todas las categorías</option>
+              <option value="novela">Novela</option>
+              <option value="ciencia">Ciencia</option>
+              <option value="historia">Historia</option>
+              <option value="fantasia">Fantasía</option>
+              <option value="infantil">Infantil</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Grid de productos -->
+        <div id="productos" class="productos-grid"></div>
+
+        <!-- Sin resultados -->
+        <div id="sin-resultados" class="mensaje-info oculto">
+          🔭 No se encontraron libros con esos criterios de búsqueda.
+        </div>
+
+        <!-- Paginación -->
+        <div class="paginacion" id="paginacion"></div>
+
+      </div>
+    </section>
+
+    <!-- SOBRE NOSOTROS -->
+    <section id="nosotros" class="sobre-nosotros">
+      <div class="contenedor">
+        <h2>Conoce Librería El Túnel</h2>
+        <div class="nosotros-contenido">
+          <div class="nosotros-texto">
+            <p>El Túnel es una librería ideal para los amantes de la literatura.</p>
+            <p>
+              Además del servicio de venta de libros y productos en línea, puedes visitar
+              nuestra sucursal y acompañar tu lectura con una taza de café o bebida de tu
+              elección, o disfrutar de los diversos eventos culturales que tenemos para ti.
+            </p>
+            <p>Síguenos en redes sociales y mantente atento a la cartelera de eventos.</p>
+            <p class="sucursal-invitacion"><b>¡Ven a Librería El Túnel, te esperamos!</b></p>
+          </div>
+          <div class="nosotros-imagen">
+            <img
+              src="https://i.pinimg.com/originals/6e/dc/fe/6edcfeeaf62b8c26ff0781fb4a447599.jpg"
+              alt="Interior de la Librería El Túnel"
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer id="contacto">
+    <div class="contenedor">
+      <div class="footer-columnas">
+
+        <div class="footer-columna">
+          <h3>Librería El Túnel</h3>
+          <p>Dirección: Calle de los Libros 123, Ciudad</p>
+          <p>Teléfono: (01) 234-5678</p>
+          <p>Email: info@libroseltunel.com</p>
+          <p>Horarios: Lunes a Sábados de 10am a 6pm</p>
+          <div class="redes-sociales">
+            <a class="red-social" href="https://es-la.facebook.com/" target="_blank">
+              <img src="img/redes-img/facebook-f.svg" alt="Facebook">
+            </a>
+            <a class="red-social" href="https://twitter.com/" target="_blank">
+              <img src="img/redes-img/x-twitter.svg" alt="Twitter">
+            </a>
+            <a class="red-social" href="https://www.instagram.com/" target="_blank">
+              <img src="img/redes-img/instagram.svg" alt="Instagram">
+            </a>
+            <a class="red-social" href="https://www.tiktok.com/" target="_blank">
+              <img src="img/redes-img/tiktok-20.png" alt="TikTok">
+            </a>
+            <a class="red-social" href="https://www.youtube.com/" target="_blank">
+              <img src="img/redes-img/youtube.svg" alt="YouTube">
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-columna">
+          <h3>Conócenos</h3>
+          <a href="#inicio" class="footer-link">Inicio</a>
+          <a href="#nosotros" class="footer-link">Acerca de El Túnel</a>
+          <a href="#" class="footer-link">Tarjeta de cliente frecuente</a>
+          <a href="#" class="footer-link">Ventas por mayoreo</a>
+          <a href="#" class="footer-link">Facturación</a>
+          <a href="#" class="footer-link">Aviso de privacidad</a>
+          <a href="#" class="footer-link">Términos y condiciones</a>
+        </div>
+
+        <div class="footer-columna">
+          <h3>Regístrate</h3>
+          <p class="footer-txt">
+            Regístrate para recibir noticias de promociones, eventos y actualizaciones.
+          </p>
+          <div class="footer-subscripcion">
+            <input
+              type="email"
+              class="footer-input"
+              id="email-suscripcion"
+              placeholder="Ingresa tu email"
+            >
+            <button class="suscripcion-enviar" id="btn-suscribir">Enviar</button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="copyright">
+        <p>
+          &copy; 2025 <strong>El Túnel</strong>. Todos los derechos reservados.
+          <span> | Agencia Digital de Innovación Pública | Escuela de Código</span>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== MODAL CARRITO ===== -->
+  <div id="modal-carrito" class="modal oculto" role="dialog" aria-modal="true">
+    <div class="modal-contenido">
+      <div class="modal-encabezado">
+        <h3>Tu Carrito de Compras</h3>
+        <span class="cerrar-modal" id="cerrar-carrito" title="Cerrar">&times;</span>
+      </div>
+      <div class="modal-cuerpo">
+        <div id="carrito-items" class="carrito-items"></div>
+        <div id="carrito-vacio" class="mensaje-info">
+          Tu carrito está vacío. ¡Agrega algunos libros!
+        </div>
+        <div class="carrito-total">
+          <p>Total: $<span id="carrito-total">0.00</span></p>
+        </div>
+        <div class="carrito-acciones">
+          <button id="vaciar-carrito" class="btn btn-secundario">Vaciar carrito</button>
+          <button id="pagar" class="btn btn-primario">Pagar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL LOGIN / REGISTRO ===== -->
+  <div id="modal-login" class="modal oculto" role="dialog" aria-modal="true">
+    <div class="modal-contenido modal-auth">
+      <div class="modal-encabezado">
+        <h3 id="titulo-modal-auth">Iniciar Sesión</h3>
+        <span class="cerrar-modal" id="cerrar-login" title="Cerrar">&times;</span>
+      </div>
+      <div class="modal-cuerpo">
+
+        <!-- Tabs Login / Registro -->
+        <div class="auth-tabs">
+          <button class="auth-tab activo" id="tab-login">Iniciar Sesión</button>
+          <button class="auth-tab" id="tab-registro">Registrarse</button>
+        </div>
+
+        <!-- Formulario Login -->
+        <form id="form-login" class="form-auth">
+          <div class="form-grupo">
+            <label for="login-email">Email</label>
+            <input type="email" id="login-email" placeholder="tu@email.com" required>
+          </div>
+          <div class="form-grupo">
+            <label for="login-password">Contraseña</label>
+            <input type="password" id="login-password" placeholder="••••••••" required>
+          </div>
+          <p id="error-login" class="error-msg oculto"></p>
+          <button type="submit" class="btn btn-primario btn-full">Entrar</button>
+        </form>
+
+        <!-- Formulario Registro -->
+        <form id="form-registro" class="form-auth oculto">
+          <div class="form-grupo">
+            <label for="reg-nombre">Nombre completo</label>
+            <input type="text" id="reg-nombre" placeholder="Tu nombre" required>
+          </div>
+          <div class="form-grupo">
+            <label for="reg-email">Email</label>
+            <input type="email" id="reg-email" placeholder="tu@email.com" required>
+          </div>
+          <div class="form-grupo">
+            <label for="reg-password">Contraseña</label>
+            <input type="password" id="reg-password" placeholder="Mínimo 6 caracteres" required>
+          </div>
+          <p id="error-registro" class="error-msg oculto"></p>
+          <button type="submit" class="btn btn-primario btn-full">Crear cuenta</button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MENSAJE TOAST ===== -->
+  <div id="toast" class="toast oculto"></div>
+
+  <!-- Scripts -->
+  <script src="scripts/app.js" defer></script>
+
+</body>
+</html>

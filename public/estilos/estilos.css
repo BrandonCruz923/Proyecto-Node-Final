@@ -1,0 +1,970 @@
+/*
+  PROYECTO FINAL DE SISTEMAS WEB - ESCUELA DE CÓDIGO
+  Tienda Online de Libros "El Túnel"
+  Hoja de estilos CSS3 - Versión 1.0
+  Elaboró: JLLM
+*/
+
+/* =============================================
+   IMPORTACIÓN DE FUENTES EXTERNAS (Google Fonts)
+   ============================================= */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+/* =============================================
+   ESTILOS GENERALES / RESET BÁSICO
+   ============================================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #f8f9fa;
+}
+
+/* Contenedor centrado para limitar el ancho del contenido */
+.contenedor {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+a {
+  text-decoration: none;
+  color: #403022;
+}
+
+ul {
+  list-style: none;
+}
+
+/* Clase utilitaria para ocultar elementos */
+.oculto {
+  display: none !important;
+}
+
+/* =============================================
+   ENCABEZADO Y NAVEGACIÓN
+   ============================================= */
+header {
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+header .contenedor {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+}
+
+/* Nombre de la librería */
+header h1 {
+  color: #403022;
+  font-size: 38px;
+}
+
+/* Menú de navegación horizontal */
+nav ul {
+  display: flex;
+  gap: 40px;
+}
+
+nav ul li a {
+  color: #555;
+  font-weight: 510;
+  transition: color 0.3s;
+}
+
+nav ul li a:hover {
+  color: #733036;
+}
+
+/* Icono del carrito */
+.carrito-icono {
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.carrito-icono .material-icons {
+  font-size: 32px;
+  color: #403022;
+  transition: color 0.3s;
+}
+
+.carrito-icono:hover .material-icons {
+  color: #733036;
+}
+
+/* Contador de ítems en el carrito */
+.contador-carrito {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background-color: #733036;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* =============================================
+   BANNER / SECCIÓN INICIO
+   ============================================= */
+.banner {
+  background-image: url("../img/portada-tunnel.jpg");
+  background-color: #403022; /* Color de respaldo si no carga la imagen */
+  background-size: cover;
+  background-position: center;
+  color: white;
+  padding: 100px 0;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.banner h2 {
+  font-size: 36px;
+  margin-bottom: 15px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.banner p {
+  font-size: 18px;
+  max-width: 600px;
+  margin: 0 auto;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* =============================================
+   SECCIÓN DE CATÁLOGO
+   ============================================= */
+.catalogo-seccion {
+  padding: 40px 0 60px;
+}
+
+.catalogo-seccion h2 {
+  font-size: 28px;
+  margin-bottom: 25px;
+  color: #403022;
+}
+
+/* Herramientas de búsqueda y filtrado */
+.herramientas-catalogo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 30px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Buscador */
+.buscador {
+  display: flex;
+  flex: 1;
+  max-width: 500px;
+}
+
+.buscador input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px 0 0 4px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.buscador input:focus {
+  border-color: #733036;
+}
+
+.buscador button {
+  padding: 10px 20px;
+  background-color: #733036;
+  color: white;
+  border: none;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.buscador button:hover {
+  background-color: #5a2029;
+}
+
+/* Selector de categoría */
+.selector-categoria select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  min-width: 200px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.selector-categoria select:focus {
+  border-color: #733036;
+}
+
+/* =============================================
+   GRID DE PRODUCTOS
+   ============================================= */
+.productos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 25px;
+  margin-bottom: 30px;
+}
+
+/* Tarjeta individual de producto */
+.producto {
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+
+.producto:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Imagen del libro */
+.producto-imagen {
+  height: 300px;
+  overflow: hidden;
+}
+
+.producto-imagen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.producto:hover .producto-imagen img {
+  transform: scale(1.05);
+}
+
+/* Información del libro */
+.producto-info {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.producto-titulo {
+  font-size: 16px;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: #333;
+}
+
+.producto-autor {
+  color: #777;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.producto-precio {
+  font-weight: bold;
+  color: #403022;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+/* Badge de stock agotado */
+.sin-stock {
+  display: inline-block;
+  background-color: #e53935;
+  color: white;
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+/* =============================================
+   BOTONES
+   ============================================= */
+.btn {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s, opacity 0.3s;
+  border: none;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Botón principal (rojo oscuro) */
+.btn-primario {
+  background-color: #733036;
+  color: white;
+}
+
+.btn-primario:hover:not(:disabled) {
+  background-color: #5a2029;
+}
+
+/* Botón secundario (gris) */
+.btn-secundario {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.btn-secundario:hover {
+  background-color: #c0c0c0;
+}
+
+/* Botón deshabilitado (stock agotado) */
+.btn:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Botón de ancho completo */
+.btn-block {
+  display: block;
+  width: 100%;
+  margin-top: auto;
+}
+
+/* =============================================
+   PAGINACIÓN
+   ============================================= */
+.paginacion {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+/* Botón de página */
+.pagina {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: white;
+  color: #333;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  border: 1px solid #ddd;
+  user-select: none;
+}
+
+.pagina:hover:not(.activa):not(.desactivado) {
+  background-color: #f0e8e8;
+  border-color: #733036;
+  color: #733036;
+}
+
+/* Página activa */
+.pagina.activa {
+  background-color: #733036;
+  color: white;
+  border-color: #733036;
+}
+
+/* Botón de navegación (anterior/siguiente) */
+.pagina-nav {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+/* Página desactivada */
+.pagina.desactivado {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Separador "..." */
+.pagina-separador {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  text-align: center;
+  font-weight: bold;
+  color: #777;
+}
+
+/* =============================================
+   MENSAJES INFORMATIVOS
+   ============================================= */
+.mensaje-info {
+  text-align: center;
+  padding: 30px;
+  font-size: 18px;
+  color: #777;
+}
+
+/* =============================================
+   SECCIÓN SOBRE NOSOTROS
+   ============================================= */
+.sobre-nosotros {
+  padding: 60px 0;
+  background-color: #f1f1f1;
+}
+
+.sobre-nosotros h2 {
+  font-size: 28px;
+  color: #403022;
+  margin-bottom: 10px;
+}
+
+.nosotros-contenido {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.nosotros-texto {
+  flex: 1;
+  min-width: 300px;
+}
+
+.nosotros-texto p {
+  margin-bottom: 15px;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.sucursal-invitacion {
+  font-size: 18px !important;
+  color: #733036;
+}
+
+.nosotros-imagen {
+  flex: 1;
+  min-width: 300px;
+}
+
+.nosotros-imagen img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* =============================================
+   FOOTER / PIE DE PÁGINA
+   ============================================= */
+footer {
+  background-color: #ad9e8f;
+  color: #fff;
+  padding: 60px 0 30px;
+}
+
+.footer-columnas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.footer-columna {
+  flex: 1;
+  min-width: 220px;
+}
+
+.footer-columna h3 {
+  color: #1a1a1a;
+  margin-bottom: 20px;
+  font-size: 18px;
+  border-bottom: 2px solid #733036;
+  padding-bottom: 8px;
+}
+
+.footer-columna p {
+  color: #1a1a1a;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+/* Íconos de redes sociales */
+.redes-sociales {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.red-social {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  transition: transform 0.3s;
+}
+
+.red-social img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.red-social:hover {
+  transform: scale(1.2);
+}
+
+/* Links del footer */
+.footer-link {
+  color: #1a1a1a;
+  text-decoration: none;
+  display: block;
+  padding: 4px 0;
+  font-size: 14px;
+  transition: color 0.3s;
+}
+
+.footer-link:hover {
+  color: #733036;
+}
+
+/* Formulario de suscripción */
+.footer-txt {
+  font-size: 14px;
+  margin-bottom: 10px;
+  color: #1a1a1a;
+}
+
+.footer-subscripcion {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  margin-top: 10px;
+}
+
+.footer-input {
+  background: #ffffff;
+  flex: 1;
+  font-size: 14px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px 0 0 4px;
+  outline: none;
+}
+
+.suscripcion-enviar {
+  background-color: #313B52;
+  color: #ffffff;
+  border: none;
+  border-radius: 0 4px 4px 0;
+  padding: 8px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.suscripcion-enviar:hover {
+  background-color: #1e2638;
+}
+
+/* Copyright */
+.copyright {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  color: #1a1a1a;
+  font-size: 13px;
+}
+
+/* =============================================
+   MODAL DEL CARRITO DE COMPRAS
+   ============================================= */
+
+/* Fondo oscuro del modal */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Contenedor del modal */
+.modal-contenido {
+  background-color: white;
+  width: 90%;
+  max-width: 600px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Encabezado del modal */
+.modal-encabezado {
+  padding: 15px 20px;
+  background-color: #f8f9fa;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #733036;
+}
+
+.modal-encabezado h3 {
+  color: #403022;
+  font-size: 20px;
+}
+
+/* Botón cerrar modal */
+.cerrar-modal {
+  font-size: 28px;
+  cursor: pointer;
+  color: #777;
+  line-height: 1;
+  transition: color 0.3s;
+}
+
+.cerrar-modal:hover {
+  color: #733036;
+}
+
+/* Cuerpo del modal */
+.modal-cuerpo {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Lista de ítems del carrito */
+.carrito-items {
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+/* Ítem individual del carrito */
+.carrito-item {
+  display: flex;
+  gap: 15px;
+  padding: 15px 0;
+  border-bottom: 1px solid #eee;
+  align-items: flex-start;
+}
+
+/* Imagen del libro en el carrito */
+.carrito-item-imagen {
+  width: 60px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+/* Detalles del ítem */
+.carrito-item-detalles {
+  flex: 1;
+}
+
+.carrito-item-titulo {
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.carrito-item-precio {
+  color: #733036;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.carrito-item-cantidad {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #555;
+  font-size: 14px;
+}
+
+/* Botón eliminar ítem */
+.eliminar-item {
+  color: #e53935;
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
+  transition: color 0.3s, transform 0.2s;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.eliminar-item:hover {
+  color: #b71c1c;
+  transform: scale(1.2);
+}
+
+/* Total del carrito */
+.carrito-total {
+  display: flex;
+  justify-content: flex-end;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 20px 0;
+  color: #403022;
+  border-top: 2px solid #eee;
+  padding-top: 15px;
+}
+
+/* Botones de acción del carrito */
+.carrito-acciones {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.carrito-acciones button {
+  flex: 1;
+  padding: 12px;
+  font-size: 15px;
+}
+
+/* =============================================
+   MENSAJES TEMPORALES (TOAST)
+   ============================================= */
+.mensaje-toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  border-radius: 6px;
+  color: #fff;
+  z-index: 2000;
+  font-size: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: opacity 0.5s ease;
+  max-width: 300px;
+}
+
+.mensaje-exito {
+  background-color: #A67721;
+}
+
+.mensaje-error {
+  background-color: #A61414;
+}
+
+/* =============================================
+   RESPONSIVE DESIGN (MEDIA QUERIES)
+   ============================================= */
+@media (max-width: 768px) {
+
+  /* Header en móvil */
+  header .contenedor {
+    flex-direction: column;
+    height: auto;
+    padding: 15px;
+    gap: 10px;
+  }
+
+  nav ul {
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* Banner en móvil */
+  .banner h2 {
+    font-size: 24px;
+  }
+
+  /* Catálogo en móvil */
+  .herramientas-catalogo {
+    flex-direction: column;
+  }
+
+  .buscador {
+    max-width: 100%;
+  }
+
+  /* Grid de productos en móvil */
+  .productos-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 15px;
+  }
+
+  /* Footer en móvil */
+  .footer-columnas {
+    flex-direction: column;
+  }
+
+  /* Carrito en móvil */
+  .carrito-acciones {
+    flex-direction: column;
+  }
+}
+
+/* ── HEADER ACCIONES ── */
+.header-acciones {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btn-login {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: transparent;
+  border: 1px solid #fff;
+  color: #fff;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+.btn-login:hover { background: rgba(255,255,255,0.15); }
+
+.btn-logout {
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+.btn-logout:hover { color: #f8d7da; }
+
+/* ── MODAL AUTH ── */
+.modal-auth { max-width: 420px; }
+
+.auth-tabs {
+  display: flex;
+  border-bottom: 2px solid #eee;
+  margin-bottom: 1.2rem;
+}
+.auth-tab {
+  flex: 1;
+  padding: 0.6rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #666;
+  transition: color 0.2s;
+}
+.auth-tab.activo {
+  color: #333;
+  font-weight: 700;
+  border-bottom: 3px solid #8B4513;
+}
+
+.form-auth { display: flex; flex-direction: column; gap: 1rem; }
+
+.form-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.form-grupo label { font-weight: 600; font-size: 0.9rem; }
+.form-grupo input {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+.form-grupo input:focus {
+  outline: none;
+  border-color: #8B4513;
+}
+
+.btn-full { width: 100%; }
+
+.error-msg {
+  color: #c0392b;
+  font-size: 0.85rem;
+  background: #fdecea;
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+}
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  padding: 0.8rem 1.2rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  z-index: 9999;
+  transition: opacity 0.3s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.toast-exito       { background: #d4edda; color: #155724; }
+.toast-error       { background: #f8d7da; color: #721c24; }
+.toast-advertencia { background: #fff3cd; color: #856404; }
+
+/* ── STOCK ── */
+.producto-stock { font-size: 0.8rem; color: #666; margin: 0.2rem 0; }
+.sin-stock      { color: #c0392b; font-weight: bold; }
+
+/* ── PAGINACIÓN ── */
+.paginacion {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+.btn-pagina {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #8B4513;
+  background: #fff;
+  color: #8B4513;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-pagina:hover,
+.btn-pagina.activo {
+  background: #8B4513;
+  color: #fff;
+}
+.btn-pagina:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

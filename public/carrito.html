@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Carrito - El Túnel</title>
+  <link rel="stylesheet" href="styles/styles.css" />
+  <link rel="stylesheet" href="styles/carrito.css" />
+</head>
+<body>
+
+  <!-- 🔝 NAVBAR -->
+  <header class="navbar">
+    <div class="navbar-brand">El Túnel</div>
+    <nav class="navbar-links">
+      <a href="index.html">Inicio</a>
+      <a href="index.html#catalogo">Catálogo</a>
+      <a href="#">Sobre Nosotros</a>
+      <a href="#">Contacto</a>
+    </nav>
+    <a href="carrito.html" class="carrito-icon" style="position:relative;">
+      🛒
+      <span id="carrito-contador">0</span>
+    </a>
+  </header>
+
+  <!-- 🛒 CONTENIDO DEL CARRITO -->
+  <main class="carrito-container">
+    <h2>🛒 Tu Carrito</h2>
+    <div id="carrito-contenido">
+      <!-- Se renderiza con JavaScript -->
+    </div>
+  </main>
+
+  <script src="scripts/carrito.js"></script>
+  <script>
+    // ============================================
+    // RENDERIZAR PÁGINA DEL CARRITO
+    // ============================================
+    function renderizarCarrito() {
+      const contenedor = document.getElementById('carrito-contenido');
+      const items = Carrito.obtener();
+
+      if (items.length === 0) {
+        contenedor.innerHTML = `
+          <div class="carrito-vacio">
+            <div class="icono-vacio">🛒</div>
+            <h3>Tu carrito está vacío</h3>
+            <p>¡Agrega algunos libros para comenzar!</p>
+            <a href="index.html#catalogo" class="btn-ir-catalogo">
+              Ver Catálogo
+            </a>
+          </div>
+        `;
+        return;
+      }
+
+      const filasHTML = items.map(item => `
+        <tr>
+          <td>
+            <div class="carrito-item-info">
+              <img
+                src="img/libros-img/${item.imagen}"
+                alt="${item.titulo}"
+                onerror="this.src='img/libros-img/principito.webp'; this.onerror=null;"
+              />
+              <div>
+                <h4>${item.titulo}</h4>
+                <p>${item.autor}</p>
+              </div>
+            </div>
+          </td>
+          <td>$${item.precio.toFixed(2)}</td>
+          <td>
+            <div class="cantidad-controles">
+              <button onclick="cambiarCantidad(${item.id}, -1)">−</button>
+              <span>${item.cantidad}</span>
+              <button onclick="cambiarCantidad(${item.id}, 1)">+</button>
+            </div>
+          </td>
+          <td><strong>$${(item.precio * item.cantidad).toFixed(2)}</strong></td>
+          <td>
+            <button class="btn-eliminar" onclick="eliminarItem(${item.id})" title="Eliminar">
+              🗑️
+            </button>
+          </td>
+        </tr>
+      `).join('');
+
+      const totalItems = Carrito.contarItems();
+      const total = Carrito.calcularTotal();
+
+      contenedor.innerHTML = `
+        <table class="carrito-tabla">
+          <thead>
+            <tr>
+              <th>Libro</th>
+              <th>Precio</th>
+              <th>Cantidad</th>
+              <th>Subtotal</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            ${filasHTML}
+          </tbody>
+        </table>
+
+        <div class="carrito-resumen">
+          <h3>Resumen del Pedido</h3>
+          <div class="resumen-linea">
+            <span>Libros (${totalItems})</span>
+            <span>$${total}</span>
+          </div>
+          <div class="resumen-linea">
+            <span>Envío</span>
+            <span>Gratis 🎉</span>
+          </div>
+          <div class="resumen-total">
+            <span>Total</span>
+            <span>$${total}</span>
+          </div>
+          <div class="carrito-acciones">
+            <button class="btn-vaciar" onclick="vaciarCarrito()">
+              🗑️ Vaciar
+            </button>
+            <button class="btn-comprar" onclick="finalizarCompra()">
+              Finalizar Compra →
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function cambiarCantidad(id, delta) {
+      if (delta > 0) {
+        const items = Carrito.obtener();
+        const item = items.find(i => i.id === id);
+        if (item) Carrito.agregar(item);
+      } else {
+        Carrito.reducir(id);
+      }
+      renderizarCarrito();
+    }
+
+    function eliminarItem(id) {
+      Carrito.eliminar(id);
+      renderizarCarrito();
+    }
+
+    function vaciarCarrito() {
+      if (confirm('¿Seguro que quieres vaciar el carrito?')) {
+        Carrito.vaciar();
+        renderizarCarrito();
+      }
+    }
+
+    function finalizarCompra() {
+      alert('🎉 ¡Gracias por tu compra!\n\nEn una versión completa aquí iría el checkout.');
+    }
+
+    // Renderizar al cargar
+    renderizarCarrito();
+  </script>
+
+</body>
+</html>

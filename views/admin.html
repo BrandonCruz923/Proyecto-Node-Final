@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Administración — El Túnel</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Roboto', sans-serif; background: #f4f6f8; }
+
+    /* Header del panel */
+    .admin-header {
+      background: #403022;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .admin-header h1 { font-size: 22px; }
+    .btn-logout {
+      background: #733036;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .btn-logout:hover { background: #5a2029; }
+
+    /* Contenido principal */
+    .admin-main { padding: 30px; max-width: 1100px; margin: 0 auto; }
+    .admin-main h2 { color: #403022; margin-bottom: 20px; font-size: 24px; }
+
+    /* Tabla de usuarios */
+    .tabla-contenedor {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead { background: #733036; color: white; }
+    th, td { padding: 14px 16px; text-align: left; font-size: 14px; }
+    tbody tr:nth-child(even) { background: #f9f9f9; }
+    tbody tr:hover { background: #f0e8e8; }
+
+    /* Badge de rol */
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .badge-admin   { background: #fde8e8; color: #c62828; }
+    .badge-cliente { background: #e8f5e9; color: #2e7d32; }
+
+    /* Select de rol */
+    .select-rol {
+      padding: 5px 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .btn-guardar-rol {
+      background: #733036;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      margin-left: 5px;
+    }
+
+    /* Indicador de estado */
+    .estado-activo   { color: #2e7d32; font-weight: 600; }
+    .estado-inactivo { color: #c62828; font-weight: 600; }
+
+    /* Mensaje de carga */
+    .cargando { text-align: center; padding: 40px; color: #777; font-size: 16px; }
+
+    /* Toast de notificación */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #2e7d32;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 6px;
+      display: none;
+      z-index: 1000;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Encabezado del panel -->
+  <header class="admin-header">
+    <h1>🛠️ Panel de Administración — El Túnel</h1>
+    <div>
+      <span id="nombre-admin" style="margin-right: 15px; font-size: 14px;"></span>
+      <button class="btn-logout" id="btn-logout">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <!-- Contenido principal -->
+  <main class="admin-main">
+    <h2>👥 Gestión de Usuarios</h2>
+
+    <!-- Tabla de usuarios -->
+    <div class="tabla-contenedor">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Rol actual</th>
+            <th>Asignar rol</th>
+            <th>Estado</th>
+            <th>Registrado</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-usuarios">
+          <tr>
+            <td colspan="7" class="cargando">⏳ Cargando usuarios...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- Toast de notificación -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // Verificar sesión y cargar datos al iniciar
+    document.addEventListener('DOMContentLoaded', async () => {
+      await verificarSesionAdmin();
+      await cargarUsuarios();
+    });
+
+    // Verificar que el usuario tenga sesión de admin
+    async function verificarSesionAdmin() {
+      try {
+        const resp  = await fetch('/api/auth/sesion');
+        const datos = await resp.json();
+
+        if (!datos.autenticado || datos.usuario.rol !== 'admin') {
+          window.location.href = '/login';
+          return;
+        }
+
+        document.getElementById('nombre-admin').textContent =
+          `👤 ${datos.usuario.nombre}`;
+
+      } catch (err) {
+        window.location.href = '/login';
+      }
+    }
+
+    // Cargar la lista de usuarios desde la API
+    async function cargarUsuarios() {
+      try {
+        const [respUsuarios, respRoles] = await Promise.all([
+          fetch('/api/admin/usuarios'),
+          fetch('/api/admin/roles')
+        ]);
+
+        const datosUsuarios = await respUsuarios.json();
+        const datosRoles    = await respRoles.json();
+
+        if (datosUsuarios.status !== 'success') {
+          document.getElementById('tabla-usuarios').innerHTML =
+            '<tr><td colspan="7" class="cargando">❌ Error al cargar usuarios</td></tr>';
+          return;
+        }
+
+        const usuarios = datosUsuarios.data.usuarios;
+        const roles    = datosRoles.data.roles;
+
+        // Generar opciones del select de roles
+        const opcionesRoles = roles.map(r =>
+          `<option value="${r.id}">${r.nombre}</option>`
+        ).join('');
+
+        // Generar filas de la tabla
+        const filas = usuarios.map(u => `
+          <tr>
+            <td>${u.id}</td>
+            <td>${u.nombre}</td>
+            <td>${u.email}</td>
+            <td>
+              <span class="badge badge-${u.rol}">
+                ${u.rol}
+              </span>
+            </td>
+            <td>
+              <select class="select-rol" id="rol-${u.id}">
+                ${roles.map(r =>
+                  `<option value="${r.id}" ${r.nombre === u.rol ? 'selected' : ''}>
+                    ${r.nombre}
+                  </option>`
+                ).join('')}
+              </select>
+              <button
+                class="btn-guardar-rol"
+                onclick="actualizarRol(${u.id})"
+              >
+                Guardar
+              </button>
+            </td>
+            <td>
+              <span class="${u.activo ? 'estado-activo' : 'estado-inactivo'}">
+                ${u.activo ? '✅ Activo' : '❌ Inactivo'}
+              </span>
+            </td>
+            <td>${new Date(u.creado_en).toLocaleDateString('es-MX')}</td>
+          </tr>
+        `).join('');
+
+        document.getElementById('tabla-usuarios').innerHTML = filas;
+
+      } catch (err) {
+        console.error('Error al cargar usuarios:', err);
+      }
+    }
+
+    // Actualizar el rol de un usuario
+    async function actualizarRol(idUsuario) {
+      const nuevoRol = document.getElementById(`rol-${idUsuario}`).value;
+
+      try {
+        const resp = await fetch(`/api/admin/usuarios/${idUsuario}/rol`, {
+          method:  'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ id_rol: parseInt(nuevoRol) })
+        });
+
+        const datos = await resp.json();
+
+        if (datos.status === 'success') {
+          mostrarToast('✅ Rol actualizado correctamente');
+          await cargarUsuarios(); // Recargar la tabla
+        } else {
+          mostrarToast('❌ ' + datos.mensaje, true);
+        }
+
+      } catch (err) {
+        mostrarToast('❌ Error al actualizar el rol', true);
+      }
+    }
+
+    // Cerrar sesión
+    document.getElementById('btn-logout').addEventListener('click', async () => {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      window.location.href = '/login';
+    });
+
+    // Mostrar notificación temporal
+    function mostrarToast(texto, esError = false) {
+      const toast = document.getElementById('toast');
+      toast.textContent = texto;
+      toast.style.background  = esError ? '#c62828' : '#2e7d32';
+      toast.style.display     = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 3000);
+    }
+  </script>
+</body>
+</html>
