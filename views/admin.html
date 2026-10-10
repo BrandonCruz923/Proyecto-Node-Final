@@ -129,7 +129,7 @@
         </thead>
         <tbody id="tabla-usuarios">
           <tr>
-            <td colspan="7" class="cargando">⏳ Cargando usuarios...</td>
+            <td colspan="7" class="cargando">Cargando usuarios...</td>
           </tr>
         </tbody>
       </table>
@@ -158,7 +158,7 @@
         }
 
         document.getElementById('nombre-admin').textContent =
-          `👤 ${datos.usuario.nombre}`;
+          ` ${datos.usuario.nombre}`;
 
       } catch (err) {
         window.location.href = '/login';
@@ -218,7 +218,7 @@
             </td>
             <td>
               <span class="${u.activo ? 'estado-activo' : 'estado-inactivo'}">
-                ${u.activo ? '✅ Activo' : '❌ Inactivo'}
+                ${u.activo ? 'Activo' : 'Inactivo'}
               </span>
             </td>
             <td>${new Date(u.creado_en).toLocaleDateString('es-MX')}</td>
@@ -246,14 +246,14 @@
         const datos = await resp.json();
 
         if (datos.status === 'success') {
-          mostrarToast('✅ Rol actualizado correctamente');
+          mostrarToast('Rol actualizado correctamente');
           await cargarUsuarios(); // Recargar la tabla
         } else {
-          mostrarToast('❌ ' + datos.mensaje, true);
+          mostrarToast('Error' + datos.mensaje, true);
         }
 
       } catch (err) {
-        mostrarToast('❌ Error al actualizar el rol', true);
+        mostrarToast('Error al actualizar el rol', true);
       }
     }
 

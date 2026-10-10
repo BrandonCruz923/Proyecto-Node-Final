@@ -4,19 +4,19 @@
 
 const Carrito = {
 
-  // 📦 Obtener carrito del localStorage
+  // Obtener carrito del localStorage
   obtener() {
     const data = localStorage.getItem('carrito');
     return data ? JSON.parse(data) : [];
   },
 
-  // 💾 Guardar carrito en localStorage
+  // Guardar carrito en localStorage
   guardar(carrito) {
     localStorage.setItem('carrito', JSON.stringify(carrito));
     this.actualizarContador();
   },
 
-  // ➕ Agregar libro al carrito
+  // Agregar libro al carrito
   agregar(libro) {
     const carrito = this.obtener();
     const existente = carrito.find(item => item.id === libro.id);
@@ -28,7 +28,7 @@ const Carrito = {
         this.guardar(carrito);
         this.mostrarNotificacion(`"${libro.titulo}" actualizado en el carrito`);
       } else {
-        this.mostrarNotificacion(`⚠️ Stock máximo alcanzado para "${libro.titulo}"`, 'error');
+        this.mostrarNotificacion(` Stock máximo alcanzado para "${libro.titulo}"`, 'error');
         return;
       }
     } else {
@@ -43,7 +43,7 @@ const Carrito = {
         cantidad: 1
       });
       this.guardar(carrito);
-      this.mostrarNotificacion(`✅ "${libro.titulo}" agregado al carrito`);
+      this.mostrarNotificacion(`"${libro.titulo}" agregado al carrito`);
     }
   },
 
@@ -61,31 +61,31 @@ const Carrito = {
     this.guardar(carrito);
   },
 
-  // 🗑️ Eliminar libro del carrito
+  // Eliminar libro del carrito
   eliminar(id) {
     let carrito = this.obtener().filter(item => item.id !== id);
     this.guardar(carrito);
   },
 
-  // 🧹 Vaciar carrito completo
+  // Vaciar carrito completo
   vaciar() {
     localStorage.removeItem('carrito');
     this.actualizarContador();
   },
 
-  // 🔢 Contar total de items
+  // Contar total de items
   contarItems() {
     return this.obtener().reduce((total, item) => total + item.cantidad, 0);
   },
 
-  // 💰 Calcular total
+  //  Calcular total
   calcularTotal() {
     return this.obtener()
       .reduce((total, item) => total + (item.precio * item.cantidad), 0)
       .toFixed(2);
   },
 
-  // 🔄 Actualizar contador en el navbar
+  // Actualizar contador en el navbar
   actualizarContador() {
     const contador = document.getElementById('carrito-contador');
     if (contador) {
@@ -95,7 +95,7 @@ const Carrito = {
     }
   },
 
-  // 🔔 Mostrar notificación temporal
+  //  Mostrar notificación temporal
   mostrarNotificacion(mensaje, tipo = 'success') {
     // Eliminar notificación anterior si existe
     const anterior = document.getElementById('notificacion-carrito');

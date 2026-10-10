@@ -16,9 +16,9 @@ const pool = new Pool({
 // Probar conexión al iniciar
 pool.connect((err, client, release) => {
     if (err) {
-        console.error('❌ Error al conectar a PostgreSQL:', err.message);
+        console.error('Error al conectar a PostgreSQL:', err.message);
     } else {
-        console.log('✅ Conectado a PostgreSQL - El Túnel');
+        console.log('Conectado a PostgreSQL - El Túnel');
         release();
     }
 });

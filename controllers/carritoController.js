@@ -1,7 +1,7 @@
 const pool = require('../config/db');
 
 // ─────────────────────────────────────────
-// 🔒 Helper: verificar sesión activa
+// Helper: verificar sesión activa
 // ─────────────────────────────────────────
 const requireUser = (req, res) => {
   if (!req.session || !req.session.usuario) {
@@ -67,7 +67,7 @@ const agregarItem = async (req, res) => {
   const usuario_id = usuario.id;
   const { libro_id, cantidad } = req.body;
 
-  // ✅ Validar que libro_id fue enviado
+  // Validar que libro_id fue enviado
   if (!libro_id) {
     return res.status(400).json({
       status: 'error',
@@ -75,7 +75,7 @@ const agregarItem = async (req, res) => {
     });
   }
 
-  // ✅ Validar que el libro existe en BD
+  // Validar que el libro existe en BD
   const libroExiste = await pool.query(
     `SELECT id FROM libros WHERE id = $1`,
     [libro_id]
@@ -220,10 +220,10 @@ const procesarPago = async (req, res) => {
   if (!usuario) return;
 
   const usuario_id = usuario.id;
-  const client = await pool.connect(); // 🔑 Cliente dedicado para transacción
+  const client = await pool.connect(); // Cliente dedicado para transacción
 
   try {
-    await client.query('BEGIN'); // 🟢 Inicia transacción
+    await client.query('BEGIN'); // Inicia transacción
 
     // 1) Traer items del carrito activo
     const items = await client.query(
@@ -282,7 +282,7 @@ const procesarPago = async (req, res) => {
       [usuario_id]
     );
 
-    await client.query('COMMIT'); // ✅ Todo OK → confirmar
+    await client.query('COMMIT'); // Todo OK → confirmar
 
     res.status(201).json({
       status: 'success',
@@ -291,16 +291,16 @@ const procesarPago = async (req, res) => {
     });
 
   } catch (error) {
-    await client.query('ROLLBACK'); // ❌ Error → revertir todo
+    await client.query('ROLLBACK'); //Error → revertir todo
     console.error('Error al procesar pago:', error);
     res.status(500).json({ status: 'error', message: 'Error del servidor' });
   } finally {
-    client.release(); // 🔓 Liberar conexión siempre
+    client.release(); // Liberar conexión siempre
   }
 };
 
 // ─────────────────────────────────────────
-// 📤 Exportar funciones
+// Exportar funciones
 // ─────────────────────────────────────────
 module.exports = {
   obtenerCarrito,

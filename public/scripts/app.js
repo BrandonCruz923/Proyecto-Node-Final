@@ -46,7 +46,7 @@ const errorRegistro    = document.getElementById('error-registro');
 const toast            = document.getElementById('toast');
 
 // ══════════════════════════════════════════════════
-//  🚀 INICIALIZACIÓN
+// INICIALIZACIÓN
 // ══════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', async () => {
   await verificarSesion();
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // ══════════════════════════════════════════════════
-//  📚 CARGA DE LIBROS DESDE LA API
+// CARGA DE LIBROS DESDE LA API
 // ══════════════════════════════════════════════════
 
 /**
@@ -73,16 +73,16 @@ async function cargarLibrosDesdeAPI() {
       paginaActual    = 1;
       cargarProductos();
     } else {
-      mostrarToast('⚠️ No se pudieron cargar los libros', 'error');
+      mostrarToast('No se pudieron cargar los libros', 'error');
     }
   } catch (error) {
-    console.error('❌ Error al cargar libros:', error.message);
-    mostrarToast('❌ Error al conectar con el servidor', 'error');
+    console.error('Error al cargar libros:', error.message);
+    mostrarToast('Error al conectar con el servidor', 'error');
   }
 }
 
 // ══════════════════════════════════════════════════
-//  🃏 RENDERIZADO DE TARJETAS
+//  RENDERIZADO DE TARJETAS
 // ══════════════════════════════════════════════════
 
 /**
@@ -122,7 +122,6 @@ function crearTarjeta(libro) {
   div.classList.add('producto-tarjeta');
 
   // Ruta de imagen con fallback
- // ✅ CÓDIGO CORREGIDO
   const imagenSrc = libro.imagen
     ? `img/libros-img/${libro.imagen}`
     : 'img/libros-img/principito.webp';
@@ -162,7 +161,7 @@ function crearTarjeta(libro) {
 }
 
 // ══════════════════════════════════════════════════
-//  📄 PAGINACIÓN
+//  PAGINACIÓN
 // ══════════════════════════════════════════════════
 
 function renderizarPaginacion() {
@@ -219,7 +218,7 @@ function scrollToCatalogo() {
 }
 
 // ══════════════════════════════════════════════════
-//  🔍 BÚSQUEDA Y FILTRADO
+//  BÚSQUEDA Y FILTRADO
 // ══════════════════════════════════════════════════
 
 /**
@@ -251,7 +250,7 @@ async function buscarLibrosAPI(texto, categoria) {
       cargarProductos();
     }
   } catch (error) {
-    console.error('❌ Error en búsqueda:', error.message);
+    console.error('Error en búsqueda:', error.message);
     // Fallback: filtrar localmente
     filtrarLocal(texto, categoria);
   }
@@ -285,7 +284,7 @@ function filtrarPorCategoria() {
 }
 
 // ══════════════════════════════════════════════════
-//  🛒 CARRITO — CONECTADO A LA BASE DE DATOS
+// CARRITO — CONECTADO A LA BASE DE DATOS
 // ══════════════════════════════════════════════════
 
 async function agregarAlCarritoDB(id) {
@@ -304,14 +303,14 @@ async function agregarAlCarritoDB(id) {
     const datos = await respuesta.json();
 
     if (datos.status === 'success') {
-      mostrarToast(`✅ ${datos.mensaje || 'Libro agregado al carrito'}`, 'exito');
+      mostrarToast(`${datos.mensaje || 'Libro agregado al carrito'}`, 'exito');
       await actualizarContadorCarritoDB();
     } else {
-      mostrarToast(`⚠️ ${datos.mensaje || 'No se pudo agregar'}`, 'error');
+      mostrarToast(`${datos.mensaje || 'No se pudo agregar'}`, 'error');
     }
   } catch (error) {
-    console.error('❌ Error al agregar al carrito:', error.message);
-    mostrarToast('❌ Error al conectar con el servidor', 'error');
+    console.error('Error al agregar al carrito:', error.message);
+    mostrarToast('Error al conectar con el servidor', 'error');
   }
 }
 
@@ -323,7 +322,7 @@ async function actualizarContadorCarritoDB() {
       contadorCarrito.textContent = datos.data.cantidad || 0;
     }
   } catch (error) {
-    console.error('❌ Error al actualizar contador:', error.message);
+    console.error('Error al actualizar contador:', error.message);
   }
 }
 
@@ -378,7 +377,7 @@ async function mostrarCarritoDB() {
       }
     }
   } catch (error) {
-    console.error('❌ Error al mostrar carrito:', error.message);
+    console.error('Error al mostrar carrito:', error.message);
   }
 
   modalCarrito.classList.remove('oculto');
@@ -391,10 +390,10 @@ async function eliminarDelCarritoDB(idLibro) {
     });
     const datos = await respuesta.json();
     if (datos.status === 'success') {
-      mostrarToast('🗑️ Libro eliminado del carrito', 'exito');
+      mostrarToast('Libro eliminado del carrito', 'exito');
     }
   } catch (error) {
-    console.error('❌ Error al eliminar del carrito:', error.message);
+    console.error('Error al eliminar del carrito:', error.message);
   }
 }
 
@@ -403,17 +402,17 @@ async function vaciarCarritoDB() {
     const respuesta = await fetch('/api/carrito/vaciar', { method: 'DELETE' });
     const datos     = await respuesta.json();
     if (datos.status === 'success') {
-      mostrarToast('🗑️ Carrito vaciado', 'exito');
+      mostrarToast('Carrito vaciado', 'exito');
       await mostrarCarritoDB();
       await actualizarContadorCarritoDB();
     }
   } catch (error) {
-    console.error('❌ Error al vaciar carrito:', error.message);
+    console.error('Error al vaciar carrito:', error.message);
   }
 }
 
 // ══════════════════════════════════════════════════
-//  👤 AUTENTICACIÓN
+//  AUTENTICACIÓN
 // ══════════════════════════════════════════════════
 
 async function verificarSesion() {
@@ -427,7 +426,7 @@ async function verificarSesion() {
       await actualizarContadorCarritoDB();
     }
   } catch (error) {
-    console.error('❌ Error al verificar sesión:', error.message);
+    console.error('Error al verificar sesión:', error.message);
   }
 }
 
@@ -455,14 +454,14 @@ async function login(email, password) {
       usuarioActual = datos.data.usuario;
       actualizarUIUsuario();
       cerrarModalLogin();
-      mostrarToast(`✅ ¡Bienvenido, ${usuarioActual.nombre || usuarioActual.email}!`, 'exito');
+      mostrarToast(`¡Bienvenido, ${usuarioActual.nombre || usuarioActual.email}!`, 'exito');
       await actualizarContadorCarritoDB();
     } else {
       errorLogin.textContent = datos.mensaje || 'Credenciales incorrectas';
       errorLogin.classList.remove('oculto');
     }
   } catch (error) {
-    console.error('❌ Error en login:', error.message);
+    console.error('Error en login:', error.message);
     errorLogin.textContent = 'Error al conectar con el servidor';
     errorLogin.classList.remove('oculto');
   }
@@ -481,13 +480,13 @@ async function registro(nombre, email, password) {
       usuarioActual = datos.data.usuario;
       actualizarUIUsuario();
       cerrarModalLogin();
-      mostrarToast(`✅ ¡Cuenta creada! Bienvenido, ${usuarioActual.nombre}!`, 'exito');
+      mostrarToast(`¡Cuenta creada! Bienvenido, ${usuarioActual.nombre}!`, 'exito');
     } else {
       errorRegistro.textContent = datos.mensaje || 'No se pudo crear la cuenta';
       errorRegistro.classList.remove('oculto');
     }
   } catch (error) {
-    console.error('❌ Error en registro:', error.message);
+    console.error('Error en registro:', error.message);
     errorRegistro.textContent = 'Error al conectar con el servidor';
     errorRegistro.classList.remove('oculto');
   }
@@ -498,15 +497,15 @@ async function logout() {
     await fetch('/api/auth/logout', { method: 'POST' });
     usuarioActual = null;
     actualizarUIUsuario();
-    mostrarToast('👋 Sesión cerrada correctamente', 'exito');
+    mostrarToast('Sesión cerrada correctamente', 'exito');
     contadorCarrito.textContent = '0';
   } catch (error) {
-    console.error('❌ Error al cerrar sesión:', error.message);
+    console.error('Error al cerrar sesión:', error.message);
   }
 }
 
 // ══════════════════════════════════════════════════
-//  🪟 MODALES
+//  MODALES
 // ══════════════════════════════════════════════════
 
 function abrirModalLogin() {
@@ -537,7 +536,7 @@ function mostrarFormRegistro() {
 }
 
 // ══════════════════════════════════════════════════
-//  🔔 TOAST (mensajes flotantes)
+//  TOAST (mensajes flotantes)
 // ══════════════════════════════════════════════════
 
 function mostrarToast(mensaje, tipo = 'exito') {
@@ -551,7 +550,7 @@ function mostrarToast(mensaje, tipo = 'exito') {
 }
 
 // ══════════════════════════════════════════════════
-//  🎛️ REGISTRO DE EVENTOS
+//  REGISTRO DE EVENTOS
 // ══════════════════════════════════════════════════
 
 function registrarEventos() {
@@ -574,7 +573,7 @@ function registrarEventos() {
   // ── Abrir carrito ──
   carritoIcono.addEventListener('click', () => {
     if (!usuarioActual) {
-      mostrarToast('⚠️ Debes iniciar sesión para ver el carrito', 'advertencia');
+      mostrarToast('Debes iniciar sesión para ver el carrito', 'advertencia');
       abrirModalLogin();
       return;
     }
@@ -591,7 +590,7 @@ function registrarEventos() {
 
   // ── Pagar ──
   pagarBtn.addEventListener('click', () => {
-    mostrarToast('🚧 Módulo de pago en construcción', 'advertencia');
+    mostrarToast('Módulo de pago en construcción', 'advertencia');
   });
 
   // ── Cerrar modales al hacer clic fuera ──
@@ -635,10 +634,10 @@ function registrarEventos() {
   document.getElementById('btn-suscribir').addEventListener('click', () => {
     const email = document.getElementById('email-suscripcion').value.trim();
     if (email) {
-      mostrarToast(`📧 ¡Gracias por suscribirte con ${email}!`, 'exito');
+      mostrarToast(`¡Gracias por suscribirte con ${email}!`, 'exito');
       document.getElementById('email-suscripcion').value = '';
     } else {
-      mostrarToast('⚠️ Ingresa un email válido', 'advertencia');
+      mostrarToast('Ingresa un email válido', 'advertencia');
     }
   });
 }
