@@ -971,3 +971,267 @@ footer {
   opacity: 0.4;
   cursor: not-allowed;
 }
+/* =============================================
+   PANTALLA DE PAGO - EL TÚNEL
+   ============================================= */
+
+.pago-container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 45px auto 60px;
+  padding: 0 15px;
+  min-height: 55vh;
+}
+
+.pago-container > h1 {
+  color: #403022;
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.pago-container > p {
+  color: #666;
+  margin-bottom: 25px;
+}
+
+.pago-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(280px, 1fr);
+  gap: 25px;
+  align-items: start;
+  margin-top: 25px;
+}
+
+.pago-panel {
+  padding: 25px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.pago-panel h2 {
+  color: #403022;
+  font-size: 23px;
+  margin-bottom: 15px;
+}
+
+.pago-libro {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.pago-libro img {
+  width: 75px;
+  height: 100px;
+  object-fit: contain;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.pago-libro-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.pago-libro-info h3 {
+  color: #403022;
+  font-size: 16px;
+  margin-bottom: 5px;
+  overflow-wrap: anywhere;
+}
+
+.pago-libro-info p {
+  color: #777;
+  font-size: 14px;
+  margin: 4px 0;
+}
+
+.pago-precio {
+  color: #733036;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.pago-linea,
+.pago-total {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin: 16px 0;
+}
+
+.pago-linea {
+  color: #555;
+  font-size: 15px;
+}
+
+.pago-total {
+  padding-top: 18px;
+  border-top: 2px solid #eee;
+  color: #403022;
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.pago-nota {
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-left: 4px solid #733036;
+  border-radius: 4px;
+  color: #555;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.pago-nota strong {
+  display: block;
+  color: #403022;
+  margin-bottom: 5px;
+}
+
+.pago-nota p {
+  margin: 0;
+}
+
+.pago-boton {
+  display: block;
+  width: 100%;
+  padding: 12px 18px;
+  margin-top: 20px;
+  border: none;
+  border-radius: 4px;
+  background-color: #733036;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.pago-boton:hover:not(:disabled) {
+  background-color: #5a2029;
+}
+
+.pago-boton:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
+
+.pago-volver {
+  display: inline-block;
+  margin-top: 15px;
+  color: #733036;
+  text-decoration: underline;
+}
+
+.pago-volver:hover {
+  color: #403022;
+}
+
+.pago-mensaje {
+  padding: 14px 18px;
+  margin: 20px 0;
+  border-radius: 4px;
+  background-color: #f8f9fa;
+  border-left: 4px solid #733036;
+  color: #403022;
+  line-height: 1.6;
+}
+
+.pago-vacio {
+  text-align: center;
+  padding: 40px 25px;
+}
+
+.pago-vacio p {
+  margin: 12px 0;
+  color: #666;
+}
+
+.pago-enlace {
+  display: inline-block;
+  padding: 10px 18px;
+  margin: 8px 4px;
+  border-radius: 4px;
+  background-color: #733036;
+  color: #fff;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.pago-enlace:hover {
+  background-color: #5a2029;
+  color: #fff;
+}
+
+.pago-acciones {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* Adaptación para celulares y tabletas */
+@media (max-width: 768px) {
+  .pago-container {
+    width: 100%;
+    margin: 25px auto 40px;
+    padding: 0 15px;
+  }
+
+  .pago-container > h1 {
+    font-size: 27px;
+  }
+
+  .pago-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .pago-panel {
+    padding: 18px;
+  }
+
+  .pago-libro {
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .pago-libro img {
+    width: 60px;
+    height: 85px;
+  }
+
+  .pago-precio {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 400px) {
+  .pago-libro {
+    align-items: flex-start;
+  }
+
+  .pago-libro-info {
+    flex-basis: calc(100% - 80px);
+  }
+
+  .pago-precio {
+    margin-left: 72px;
+  }
+
+  .pago-acciones {
+    flex-direction: column;
+  }
+
+  .pago-enlace {
+    text-align: center;
+  }
+}

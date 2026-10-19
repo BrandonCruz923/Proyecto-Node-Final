@@ -122,10 +122,12 @@ function crearTarjeta(libro) {
   div.classList.add('producto-tarjeta');
 
   // Ruta de imagen con fallback
+  /*
   const imagenSrc = libro.imagen
     ? `img/libros-img/${libro.imagen}`
     : 'img/libros-img/principito.webp';
-
+  */
+  const imagenSrc = libro.imagen || 'img/libros-img/principito.webp';
   div.innerHTML = `
       <div class="producto-imagen">
         <img
@@ -297,8 +299,9 @@ async function agregarAlCarritoDB(id) {
   try {
     const respuesta = await fetch('/api/carrito/agregar', {
       method:  'POST',
+      credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ id_libro: id, cantidad: 1 })
+      body:    JSON.stringify({ libro_id: id, cantidad: 1 })
     });
     const datos = await respuesta.json();
 
@@ -343,10 +346,10 @@ async function mostrarCarritoDB() {
         carritoItems.innerHTML = items.map(item => `
           <div class="carrito-item">
             <img
-              src="${item.imagen || 'img/libros-img/default.webp'}"
+              src="${item.imagen || 'img/libros-img/principito.webp'}"
               alt="${item.titulo}"
               class="carrito-item-imagen"
-              onerror="this.src='img/libros-img/default.webp'"
+              onerror="this.src='img/libros-img/principito.webp' this.onerror=null;"
             >
             <div class="carrito-item-detalles">
               <h4 class="carrito-item-titulo">${item.titulo}</h4>
@@ -364,7 +367,7 @@ async function mostrarCarritoDB() {
         `).join('');
 
         carritoTotal.textContent = parseFloat(total).toFixed(2);
-
+        console.log('Carrito mostrado con éxito:', items.imagen);
         // Eventos eliminar
         document.querySelectorAll('.eliminar-item').forEach(btn => {
           btn.addEventListener('click', async (e) => {
@@ -590,7 +593,16 @@ function registrarEventos() {
 
   // ── Pagar ──
   pagarBtn.addEventListener('click', () => {
-    mostrarToast('Módulo de pago en construcción', 'advertencia');
+     if (!usuarioActual) {
+      mostrarToast(
+        'Debes iniciar sesión para realizar la compra',
+        'advertencia'
+      );
+      abrirModalLogin();
+      return;
+    }
+
+    window.location.href = 'pago.html';
   });
 
   // ── Cerrar modales al hacer clic fuera ──

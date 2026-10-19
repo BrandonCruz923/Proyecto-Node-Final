@@ -123,7 +123,7 @@ const libros = [
     precio: 319.00,
     categoria: "novela",
     stock: 8,
-    imagen: "./imagenes/libros-img/AguaChocolate.jpg"
+    imagen: "./img/libros-img/AguaChocolate.jpg"
   },
   {
     id: 15,

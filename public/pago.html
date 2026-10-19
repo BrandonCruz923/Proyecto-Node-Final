@@ -1,0 +1,274 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finalizar compra - El Túnel</title>
+  <link rel="stylesheet" href="style/estilos.css">
+</head>
+
+<body>
+  
+<header>
+  <div class="contenedor">
+    <h1>El Túnel</h1>
+    <nav>
+      <ul>
+        <li><a href="/index.html">Inicio</a></li>
+        <li><a href="/index.html#catalogo">Catálogo</a></li>
+        <li><a href="/carrito.html">Carrito</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+
+  <main class="pago-container">
+    <h1>Finalizar compra</h1>
+    <p>Revisa tus libros antes de confirmar el pedido.</p>
+
+    <div id="pago-mensaje" class="pago-mensaje" hidden></div>
+
+    <div id="pago-contenido">
+      <p>Cargando tu pedido...</p>
+    </div>
+  </main>
+
+  <script>
+    const contenido = document.getElementById('pago-contenido');
+    const mensaje = document.getElementById('pago-mensaje');
+
+    const formatoDinero = valor =>
+      '$' + Number(valor).toFixed(2);
+
+    function escaparHTML(valor) {
+      return String(valor ?? '').replace(/[&<>"']/g, caracter => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      })[caracter]);
+    }
+
+    function mostrarMensaje(texto) {
+      mensaje.textContent = texto;
+      mensaje.hidden = false;
+    }
+
+    async function cargarPedido() {
+      try {
+        const respuesta = await fetch('/api/carrito', {
+          credentials: 'same-origin'
+        });
+
+        const resultado = await respuesta.json();
+
+        if (respuesta.status === 401) {
+          contenido.innerHTML = `
+            <div class="pago-panel pago-vacio">
+              <h2>Inicia sesión</h2>
+              <p>Debes iniciar sesión para consultar tu carrito.</p>
+              <a class="pago-enlace" href="index.html">
+                Ir al inicio
+              </a>
+            </div>`;
+          return;
+        }
+
+        if (!respuesta.ok || resultado.status !== 'success') {
+          throw new Error(
+            resultado.message || 'No se pudo cargar el carrito'
+          );
+        }
+
+        const items = resultado.data.items || [];
+        const total = Number(resultado.data.total || 0);
+
+        if (!items.length) {
+          contenido.innerHTML = `
+            <div class="pago-panel pago-vacio">
+              <h2>Tu carrito está vacío</h2>
+              <p>Agrega libros al carrito para realizar una compra.</p>
+              <a class="pago-enlace" href="index.html#catalogo">
+                Explorar libros
+              </a>
+            </div>`;
+          return;
+        }
+
+        const cantidadLibros = items.reduce(
+          (suma, item) => suma + Number(item.cantidad),
+          0
+        );
+
+        const filas = items.map(item => {
+          const titulo = escaparHTML(item.titulo);
+          const autor = escaparHTML(item.autor || '');
+          const imagen = escaparHTML(
+            item.imagen || 'img/libros-img/principito.webp'
+          );
+
+          const precio = Number(item.precio_unit);
+          const cantidad = Number(item.cantidad);
+
+          return `
+            <article class="pago-libro">
+              <img
+                src="${imagen}"
+                alt="${titulo}"
+                onerror="this.onerror=null;this.src='img/libros-img/principito.webp';"
+              >
+
+              <div class="pago-libro-info">
+                <h3>${titulo}</h3>
+                <p>${autor}</p>
+                <p>Cantidad: ${cantidad}</p>
+                <p>Precio unitario: ${formatoDinero(precio)}</p>
+              </div>
+
+              <div class="pago-precio">
+                ${formatoDinero(precio * cantidad)}
+              </div>
+            </article>`;
+        }).join('');
+
+        contenido.innerHTML = `
+          <div class="pago-grid">
+            <section class="pago-panel">
+              <h2>Resumen de libros</h2>
+              ${filas}
+            </section>
+
+            <aside class="pago-panel">
+              <h2>Resumen del pedido</h2>
+
+              <div class="pago-linea">
+                <span>Libros (${cantidadLibros} copias)</span>
+                <span>${formatoDinero(total)}</span>
+              </div>
+
+              <div class="pago-linea">
+                <span>Envío</span>
+                <span>Gratis</span>
+              </div>
+
+              <div class="pago-total">
+                <span>Total</span>
+                <span>${formatoDinero(total)}</span>
+              </div>
+
+              <div class="pago-nota">
+                <strong>Pago de Pedido</strong>
+                <p>
+                  Por el momento solo se cobrara al recibir los libros, en la biblioteca.
+                </p>
+              </div>
+
+              <button id="confirmar-pago" class="pago-boton">
+                Confirmar compra
+              </button>
+
+              <a href="carrito.html">Volver al carrito</a>
+            </aside>
+          </div>`;
+
+        document.getElementById('confirmar-pago')
+          .addEventListener('click', confirmarCompra);
+
+      } catch (error) {
+        console.error('Error al cargar el pedido:', error);
+
+        contenido.innerHTML = `
+          <div class="pago-panel">
+            <p>No se pudo cargar el pedido.</p>
+            <button class="pago-boton" onclick="cargarPedido()">
+              Intentar nuevamente
+            </button>
+          </div>`;
+      }
+    }
+
+    async function confirmarCompra() {
+      const boton = document.getElementById('confirmar-pago');
+
+      if (!boton) return;
+
+      const confirmado = confirm(
+        '¿Confirmas esta compra? ' +
+        'Se registro el pedido.'
+      );
+
+      if (!confirmado) return;
+
+      boton.disabled = true;
+      boton.textContent = 'Procesando compra...';
+      mensaje.hidden = true;
+
+      try {
+        const respuesta = await fetch('/api/carrito/pagar', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({})
+        });
+
+        const resultado = await respuesta.json();
+
+        if (!respuesta.ok || resultado.status !== 'success') {
+          mostrarMensaje(
+            resultado.message || 'No se pudo completar la compra.'
+          );
+
+          boton.disabled = false;
+          boton.textContent = 'Intentar nuevamente';
+          return;
+        }
+
+        const pedido = resultado.data;
+
+        contenido.innerHTML = `
+          <section class="pago-panel pago-vacio">
+            <h2>¡Compra completada!</h2>
+            <p>Tu pedido se registró correctamente.</p>
+            <p>
+              Número de pedido:
+              <strong>${escaparHTML(pedido.pedido_id)}</strong>
+            </p>
+            <p>
+              Total de la compra:
+              <strong>${formatoDinero(pedido.total)}</strong>
+            </p>
+            <p>El stock de los libros comprados se ha actualizado.</p>
+
+            <div class="pago-acciones">
+              <a class="pago-enlace" href="index.html#catalogo">
+                Seguir comprando
+              </a>
+              <a class="pago-enlace" href="index.html">
+                Volver al inicio
+              </a>
+            </div>
+          </section>`;
+
+      } catch (error) {
+        console.error('Error al confirmar compra:', error);
+
+        mostrarMensaje(
+          'No se pudo obtener una respuesta del servidor. ' +
+          'Antes de volver a intentar, revisa el estado del pedido ' +
+          'para evitar una segunda compra.'
+        );
+
+        boton.disabled = false;
+        boton.textContent = 'Reintentar';
+      }
+    }
+
+    cargarPedido();
+  </script>
+</body>
+</html>

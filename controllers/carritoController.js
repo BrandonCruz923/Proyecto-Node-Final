@@ -28,6 +28,7 @@ const obtenerCarrito = async (req, res) => {
       `SELECT ci.id AS item_id,
               l.titulo,
               l.autor,
+              l.imagen AS imagen,
               ci.cantidad,
               ci.precio_unit,
               (ci.cantidad * ci.precio_unit) AS subtotal
@@ -215,26 +216,42 @@ const vaciarCarrito = async (req, res) => {
 // ─────────────────────────────────────────
 // POST /api/carrito/pagar
 // ─────────────────────────────────────────
+
 const procesarPago = async (req, res) => {
   const usuario = requireUser(req, res);
   if (!usuario) return;
 
   const usuario_id = usuario.id;
-  const client = await pool.connect(); // Cliente dedicado para transacción
+  let client;
 
   try {
-    await client.query('BEGIN'); // Inicia transacción
+    client = await pool.connect();
+    await client.query('BEGIN');
 
-    // 1) Traer items del carrito activo
-    const items = await client.query(
-      `SELECT ci.id_carrito, ci.id_libro, ci.cantidad, ci.precio_unit
+    // 1. Obtener los libros del carrito y bloquear sus filas
+    // para evitar vender las mismas existencias simultáneamente.
+    const itemsRes = await client.query(
+      `SELECT
+          ci.id AS item_id,
+          ci.id_carrito,
+          ci.id_libro,
+          ci.cantidad,
+          ci.precio_unit,
+          l.titulo,
+          l.stock
        FROM carrito_items ci
-       JOIN carritos c ON ci.id_carrito = c.id
-       WHERE c.id_usuario = $1 AND c.completado = false`,
+       JOIN carritos c ON c.id = ci.id_carrito
+       JOIN libros l ON l.id = ci.id_libro
+       WHERE c.id_usuario = $1
+         AND c.completado = false
+       ORDER BY l.id
+       FOR UPDATE OF ci, l`,
       [usuario_id]
     );
 
-    if (items.rows.length === 0) {
+    const items = itemsRes.rows;
+
+    if (items.length === 0) {
       await client.query('ROLLBACK');
       return res.status(400).json({
         status: 'error',
@@ -242,60 +259,127 @@ const procesarPago = async (req, res) => {
       });
     }
 
-    // 2) Calcular total
-    const total = items.rows.reduce(
-      (sum, item) => sum + parseFloat(item.precio_unit) * item.cantidad,
+    // 2. Verificar las cantidades y las existencias
+    for (const item of items) {
+      const cantidad = Number(item.cantidad);
+      const stock = Number(item.stock);
+
+      if (!Number.isInteger(cantidad) || cantidad <= 0) {
+        await client.query('ROLLBACK');
+        return res.status(400).json({
+          status: 'error',
+          message: `Cantidad inválida para "${item.titulo}"`
+        });
+      }
+
+      if (stock < cantidad) {
+        await client.query('ROLLBACK');
+        return res.status(409).json({
+          status: 'error',
+          message: `Stock insuficiente para "${item.titulo}". Disponibles: ${stock}, solicitados: ${cantidad}.`
+        });
+      }
+    }
+
+    // 3. Calcular el total desde los precios guardados
+    const total = items.reduce(
+      (sum, item) =>
+        sum + Number(item.precio_unit) * Number(item.cantidad),
       0
     );
 
-    // 3) Crear pedido
+    // 4. Registrar el pedido
     const pedidoRes = await client.query(
       `INSERT INTO pedidos (id_usuario, total, estado)
-       VALUES ($1, $2, 'pendiente')
+       VALUES ($1, $2, 'completado')
        RETURNING id`,
-      [usuario_id, total]
+      [usuario_id, total.toFixed(2)]
     );
+
     const pedido_id = pedidoRes.rows[0].id;
 
-    // 4) Insertar items del pedido
-    for (const item of items.rows) {
+    // 5. Guardar el detalle y descontar el inventario
+    for (const item of items) {
+      const cantidad = Number(item.cantidad);
+
       await client.query(
-        `INSERT INTO pedido_items (id_pedido, id_libro, cantidad, precio_unit)
+        `INSERT INTO pedido_items
+           (id_pedido, id_libro, cantidad, precio_unit)
          VALUES ($1, $2, $3, $4)`,
-        [pedido_id, item.id_libro, item.cantidad, item.precio_unit]
+        [
+          pedido_id,
+          item.id_libro,
+          cantidad,
+          item.precio_unit
+        ]
       );
+
+      const stockRes = await client.query(
+        `UPDATE libros
+         SET stock = stock - $1
+         WHERE id = $2
+           AND stock >= $1
+         RETURNING stock`,
+        [cantidad, item.id_libro]
+      );
+
+      // Protección adicional: no permitir stock negativo.
+      if (stockRes.rowCount === 0) {
+        throw new Error(
+          `No hay existencias suficientes para "${item.titulo}"`
+        );
+      }
     }
 
-    // 5) Vaciar carrito
+    // 6. Vaciar el carrito del usuario
     await client.query(
-      `DELETE FROM carrito_items
+      `DELETE FROM carrito_items ci
        USING carritos c
-       WHERE carrito_items.id_carrito = c.id
-         AND c.id_usuario = $1 AND c.completado = false`,
+       WHERE ci.id_carrito = c.id
+         AND c.id_usuario = $1
+         AND c.completado = false`,
       [usuario_id]
     );
 
-    // 6) Marcar carrito como completado
+    // 7. Marcar los carritos activos como completados
     await client.query(
-      `UPDATE carritos SET completado = true
-       WHERE id_usuario = $1 AND completado = false`,
+      `UPDATE carritos
+       SET completado = true
+       WHERE id_usuario = $1
+         AND completado = false`,
       [usuario_id]
     );
 
-    await client.query('COMMIT'); // Todo OK → confirmar
+    // 8. Confirmar todas las operaciones juntas
+    await client.query('COMMIT');
 
-    res.status(201).json({
+    return res.status(201).json({
       status: 'success',
-      message: 'Pago procesado correctamente',
-      data: { pedido_id, total }
+      message: 'Compra simulada y registrada correctamente',
+      data: {
+        pedido_id,
+        total: Number(total.toFixed(2))
+      }
     });
 
   } catch (error) {
-    await client.query('ROLLBACK'); //Error → revertir todo
+    if (client) {
+      try {
+        await client.query('ROLLBACK');
+      } catch (rollbackError) {
+        console.error('Error al revertir la compra:', rollbackError);
+      }
+    }
+
     console.error('Error al procesar pago:', error);
-    res.status(500).json({ status: 'error', message: 'Error del servidor' });
+
+    return res.status(500).json({
+      status: 'error',
+      message: 'No se pudo procesar la compra'
+    });
+
   } finally {
-    client.release(); // Liberar conexión siempre
+    if (client) client.release();
   }
 };
 
