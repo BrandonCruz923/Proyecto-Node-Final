@@ -128,14 +128,17 @@ nav ul li a:hover {
    BANNER / SECCIÓN INICIO
    ============================================= */
 .banner {
-  background-image: url("../img/portada-tunnel.jpg");
+  background-image: url("../img/images.jpg");
   background-color: #403022; /* Color de respaldo si no carga la imagen */
   background-size: cover;
   background-position: center;
-  color: white;
+  color: rgb(240, 238, 238);
   padding: 100px 0;
   text-align: center;
   margin-bottom: 40px;
+}
+.banner i{
+  color: rgb(245, 234, 234);
 }
 
 .banner h2 {

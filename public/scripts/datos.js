@@ -1,12 +1,3 @@
-/*
-  PROYECTO FINAL DE SISTEMAS WEB - ESCUELA DE CÓDIGO
-  Datos de los libros disponibles en la tienda
-  Versión: 1.0
-  Elaboró: JLLM
-*/
-
-// Array con todos los libros del catálogo
-// Cada libro tiene: id, título, autor, precio, categoría, stock e imagen
 const libros = [
   {
     id: 1,
@@ -150,7 +141,7 @@ const libros = [
     precio: 429.00,
     categoria: "novela",
     stock: 8,
-    imagen: "./img/libros-img/recuerdosporvenir.jpg"
+    imagen: "./img/libros-img/recuerdosdelporvenir.jpg"
   },
   {
     id: 17,

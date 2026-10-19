@@ -11,8 +11,8 @@ async function actualizarPassword() {
     [hash, 'admin@eltunel.com']
   );
   
-  console.log('✅ Password actualizada correctamente');
-  console.log('🔐 Hash generado:', hash);
+  console.log('Password actualizada correctamente');
+  console.log('Hash generado:', hash);
   process.exit(0);
 }
 
