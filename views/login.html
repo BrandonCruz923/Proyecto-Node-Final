@@ -94,43 +94,55 @@
     </div>
   </div>
 
-  <script>
-    // Manejar el envío del formulario de login
-    document.getElementById('form-login').addEventListener('submit', async (e) => {
-      e.preventDefault();
 
-      const email    = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const errorMsg = document.getElementById('error-msg');
+<script>
+  document.getElementById('form-login').addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-      try {
-        // Enviar credenciales al servidor
-        const respuesta = await fetch('/api/auth/login', {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body:    JSON.stringify({ email, password })
-        });
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const errorMsg = document.getElementById('error-msg');
+    const boton = document.querySelector('.btn-login');
 
-        const datos = await respuesta.json();
+    errorMsg.style.display = 'none';
+    boton.disabled = true;
+    boton.textContent = 'Verificando...';
 
-        if (datos.status === 'success') {
-          // Redirigir según el rol del usuario
-          if (datos.usuario.rol === 'admin') {
-            window.location.href = '/admin';
-          } else {
-            window.location.href = '/';
-          }
-        } else {
-          // Mostrar mensaje de error
-          errorMsg.textContent = datos.mensaje;
-          errorMsg.style.display = 'block';
-        }
+    try {
+      const respuesta = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify({ email, password })
+      });
 
-      } catch (err) {
-        errorMsg.textContent = 'Error de conexión. Intenta de nuevo.';
-        errorMsg.style.display = 'block';
+      const datos = await respuesta.json();
+
+      if (!respuesta.ok || datos.status !== 'success') {
+        throw new Error(datos.message || 'Credenciales incorrectas');
       }
-    });
-  </script>
+
+      // Tu controlador devuelve el usuario dentro de data.usuario
+      const usuario = datos.data.usuario;
+
+      // Redirigir según el rol real del usuario
+      if (usuario.rol === 'admin') {
+        window.location.href = '/admin';
+      } else {
+        window.location.href = '/';
+      }
+
+    } catch (error) {
+      errorMsg.textContent = error.message || 'Error de conexión. Intenta de nuevo.';
+      errorMsg.style.display = 'block';
+    } finally {
+      boton.disabled = false;
+      boton.textContent = 'Iniciar sesión';
+    }
+  });
+</script>
+
 </body>
 </html>

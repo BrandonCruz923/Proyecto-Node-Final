@@ -1,0 +1,188 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administración | El Túnel</title>
+
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="style/admin.css">
+
+  <script src="scripts/admin.js" defer></script>
+</head>
+<body>
+  <header class="admin-header">
+    <a href="index.html" class="marca">
+      <span class="material-icons">menu_book</span>
+      <span>El Túnel <small>Administración</small></span>
+    </a>
+    <a href="index.html" class="volver">
+      <span class="material-icons">storefront</span>
+      Ver tienda
+    </a>
+  </header>
+
+  <div class="admin-layout">
+    <aside class="sidebar">
+      <p class="sidebar-titulo">MENÚ PRINCIPAL</p>
+      <a href="#resumen" class="menu-item activo">
+        <span class="material-icons">dashboard</span> Resumen
+      </a>
+      <a href="#nuevo-libro" class="menu-item">
+        <span class="material-icons">add_box</span> Agregar libro
+      </a>
+      <a href="#inventario" class="menu-item">
+        <span class="material-icons">inventory_2</span> Inventario
+      </a>
+      <a href="#ventas" class="menu-item">
+        <span class="material-icons">trending_up</span> Más vendidos
+      </a>
+    </aside>
+
+    <main class="admin-main">
+      <section id="resumen">
+        <p class="subtitulo">PANEL DE CONTROL</p>
+        <h1>Administración de la librería</h1>
+        <p class="descripcion">
+          Gestiona tu catálogo, existencias y rendimiento de ventas.
+        </p>
+
+        <div class="estadisticas">
+          <article class="stat-card">
+            <span class="material-icons">menu_book</span>
+            <p>Libros registrados</p>
+            <strong id="total-libros">—</strong>
+          </article>
+          <article class="stat-card">
+            <span class="material-icons">inventory_2</span>
+            <p>Unidades disponibles</p>
+            <strong id="total-stock">—</strong>
+          </article>
+          <article class="stat-card">
+            <span class="material-icons">warning_amber</span>
+            <p>Libros agotados</p>
+            <strong id="total-agotados">—</strong>
+          </article>
+        </div>
+      </section>
+
+      <section id="nuevo-libro" class="panel">
+        <div class="panel-titulo">
+          <span class="material-icons">library_add</span>
+          <div>
+            <h2>Agregar nuevo libro</h2>
+            <p>Registra un título nuevo en el catálogo.</p>
+          </div>
+        </div>
+
+        <form id="form-libro" class="form-grid">
+          <label>
+            Título
+            <input name="titulo" maxlength="200" required>
+          </label>
+
+          <label>
+            Autor
+            <input name="autor" maxlength="150" required>
+          </label>
+
+          <label>
+            Precio
+            <input name="precio" type="number" min="0"
+              step="0.01" required>
+          </label>
+
+          <label>
+            Categoría
+            <select name="categoria" required>
+              <option value="">Selecciona una categoría</option>
+              <option value="novela">Novela</option>
+              <option value="ciencia">Ciencia</option>
+              <option value="infantil">Infantil</option>
+              <option value="fantasia">Fantasía</option>
+              <option value="historia">Historia</option>
+            </select>
+          </label>
+
+          <label>
+            Stock inicial
+            <input name="stock" type="number" min="0"
+              step="1" value="0" required>
+          </label>
+
+          <label>
+            Ruta de la imagen
+            <input name="imagen" maxlength="255"
+              placeholder="./img/libros-img/libro.webp">
+          </label>
+
+          <div class="form-acciones">
+            <button type="submit" class="btn-principal">
+              <span class="material-icons">add</span>
+              Registrar libro
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <section id="inventario" class="panel">
+        <div class="panel-titulo">
+          <span class="material-icons">inventory</span>
+          <div>
+            <h2>Inventario de libros</h2>
+            <p>Consulta las existencias y agrega unidades.</p>
+          </div>
+        </div>
+
+        <div class="tabla-contenedor">
+          <table>
+            <thead>
+              <tr>
+                <th>Libro</th>
+                <th>Precio</th>
+                <th>Stock actual</th>
+                <th>Agregar unidades</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-inventario">
+              <tr><td colspan="4">Cargando inventario...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="ventas" class="panel">
+        <div class="panel-titulo">
+          <span class="material-icons">leaderboard</span>
+          <div>
+            <h2>Libros más vendidos</h2>
+            <p>Ranking de unidades vendidas en pedidos completados.</p>
+          </div>
+        </div>
+
+        <div class="tabla-contenedor">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Libro</th>
+                <th>Unidades vendidas</th>
+                <th>Importe vendido</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-ventas">
+              <tr><td colspan="4">Cargando ventas...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <p id="mensaje-admin" class="mensaje-admin" role="status"></p>
+    </main>
+  </div>
+</body>
+</html>

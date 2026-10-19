@@ -59,4 +59,5 @@ const obtenerRoles = async (req, res) => {
     }
 };
 
+
 module.exports = { obtenerUsuarios, actualizarRol, actualizarEstado, obtenerRoles };

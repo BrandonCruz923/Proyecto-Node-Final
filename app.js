@@ -1,7 +1,7 @@
+
 /*
-  PROYECTO FINAL - TIENDA EL TUNEL
+  PROYECTO FINAL - TIENDA EL TÚNEL
   Servidor principal Express.js
-  Versión: 1.0
 */
 
 const express = require('express');
@@ -10,80 +10,97 @@ const path = require('path');
 require('dotenv').config();
 
 // Importar rutas
-const authRoutes    = require('./routes/authRoutes');
-const adminRoutes   = require('./routes/adminRoutes');
+const authRoutes = require('./routes/authRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 const carritoRoutes = require('./routes/carritoRoutes');
-const librosRoutes  = require('./routes/librosRoutes');
+const librosRoutes = require('./routes/librosRoutes');
 
-const app  = express();
+const app = express();
 const PORT = process.env.PORT || 3000;
 
 // =============================================
 // MIDDLEWARES GLOBALES
 // =============================================
 
-// Parsear JSON y datos de formularios
+// Procesar solicitudes JSON y formularios
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Servir archivos estáticos desde /public
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Configuración de sesiones
+// Configurar sesiones ANTES de las rutas
 app.use(session({
-  secret:            process.env.SESSION_SECRET || 'secreto_el_tunel',
-  resave:            false,
+  secret: process.env.SESSION_SECRET || 'secreto_el_tunel',
+  resave: false,
   saveUninitialized: false,
   cookie: {
-    secure:   false,          // true en producción con HTTPS
+    secure: false, // En producción con HTTPS, configurar correctamente
     httpOnly: true,
-    maxAge:   parseInt(process.env.SESSION_MAX_AGE) || 86400000 // 24 horas
+    sameSite: 'lax',
+    maxAge: Number(process.env.SESSION_MAX_AGE) || 86400000
   }
 }));
+
+// Servir archivos públicos
+app.use(express.static(path.join(__dirname, 'public')));
 
 // =============================================
 // RUTAS DE LA API
 // =============================================
 
-// Rutas de autenticación (login / logout)
 app.use('/api/auth', authRoutes);
-
-// Rutas del panel de administración
 app.use('/api/admin', adminRoutes);
-
-// Rutas del carrito de compras (con BD)
 app.use('/api/carrito', carritoRoutes);
-
-// Rutas de búsqueda de libros (asíncrona)
 app.use('/api/libros', librosRoutes);
 
 // =============================================
-// RUTAS DE VISTAS HTML
+// VISTAS HTML
 // =============================================
 
-// Página principal de la tienda
+// Página principal
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Vista de login
+// Login
 app.get('/login', (req, res) => {
+  // Si ya inició sesión, dirigirlo según su rol
+  if (req.session?.usuario) {
+    if (req.session.usuario.rol === 'admin') {
+      return res.redirect('/admin');
+    }
+
+    return res.redirect('/');
+  }
+
   res.sendFile(path.join(__dirname, 'views', 'login.html'));
 });
 
-// Vista del panel de administración (protegida)
+// Panel de administración protegido
 app.get('/admin', (req, res) => {
-  // Verificar si el usuario está autenticado y es admin
+  // Verificar que exista una sesión de administrador
   if (!req.session.usuario || req.session.usuario.rol !== 'admin') {
     return res.redirect('/login');
   }
-  res.sendFile(path.join(__dirname, 'views', 'admin.html'));
+  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+// =============================================
+// MANEJO DE ERRORES
+// =============================================
+
+app.use((err, req, res, next) => {
+  console.error('Error del servidor:', err);
+
+  res.status(500).json({
+    status: 'error',
+    message: 'Error interno del servidor'
+  });
 });
 
 // =============================================
 // INICIO DEL SERVIDOR
 // =============================================
+
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
-  console.log(`Libreria El Tunel - Modo: ${process.env.NODE_ENV || 'desarrollo'}`);
+  console.log(`Login: http://localhost:${PORT}/login`);
+  console.log(`Panel admin: http://localhost:${PORT}/admin`);
 });
